@@ -1,24 +1,56 @@
 pipeline{
-    agent any
+    agent any 
     tools{
         maven "maven"
     }
-    stages{
-        stage('build'){
+        stages{
+    //     stage("build & SonarQube analysis"){
+    //         steps{
+    //             withSonarQubeEnv('sonarqube') {
+    //                 sh 'mvn clean package sonar:sonar'
+    //             }
+    //         }
+    //     }
+    //     stage("Quality Gate") {
+    //         steps {
+    //           timeout(time: 1, unit: 'HOURS') {
+    //             waitForQualityGate abortPipeline: true
+    //           }
+    //         }
+    //     }
+        stage("Maven Packaging"){
+          steps{
+           sh 'mvn package'
+          }
+        }
+        stage("Build Image") {
             steps{
-                sh 'hello world'
-
-                sh"printenv"
+                sh 'docker build -t devop-demo-ecr:$BUILD_NUMBER .'
             }
         }
-        stage('Publish ECR'){
+        stage("EC-repository Docker"){
             steps{
-                withEnv(["AWS_ACCESS_KEY_ID=$(env.AWS_ACCESS_KEY_ID)", "AWS_SECRET_ACCESS_KEY=$(env.AWS_SECRET_ACCESS_KEY)", "AWS_DEFAULT_REGION=$(env.AWS_DEFAULT_REGION)"])
-                sh 'docker login -u AWS -p $(aws ecr-public get-login-password --region us-east-1) public.ecr.aws/z2t0b6v5'
-                sh 'docker build -t devop-demo-ecr .''  
-                sh 'docker tag devop-demo-ecr:latest public.ecr.aws/z2t0b6v5/devop-demo-ecr:""$BUILD_ID""'
-                sh 'docker push public.ecr.aws/z2t0b6v5/devop-demo-ecr:""$BUILD_ID""'
-            }
+                sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/z2t0b6v5'
+                sh 'docker tag devop-demo-ecr:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/devop-demo-ecr:$BUILD_NUMBER'
+                sh 'docker push 266454083192.dkr.ecr.ap-northeast-1.amazonaws.com/maven-app:$BUILD_NUMBER'
+            } 
         }
+        // stage("EC-repository Helm"){
+        //     steps{
+        //         sh 'aws ecr get-login-password --region ap-northeast-1 | helm registry login --username AWS --password-stdin 266454083192.dkr.ecr.ap-northeast-1.amazonaws.com'
+        //         sh "sed -i ' s/tag/'$BUILD_NUMBER'/ ' ./HELM-CHART/values.yaml "
+        //         sh "cat ./HELM-CHART/values.yaml "
+                    // sh "helm package HELM-CHART "
+                    // sh "helm push helm-repo-0.1.0.tgz oci://266454083192.dkr.ecr.ap-northeast-1.amazonaws.com "
+        //     }
+        // }
+        // stage ('TriggerSecondJob') {
+        //     steps {
+        //         build job: 'pipelineA', parameters: [
+        //         string(name: 'param1', value: "value1")
+        //         ]
+        //     }
+        // }
+        
     }
 }
