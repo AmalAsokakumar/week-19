@@ -1,0 +1,6 @@
+projectKey=test
+serverUrl=http://34.239.153.234:9000
+serverVersion=9.7.1.62043
+dashboardUrl=http://34.239.153.234:9000/dashboard?id=test
+ceTaskId=AYUOmN6-qMy9CnxPur6j
+ceTaskUrl=http://34.239.153.234:9000/api/ce/task?id=AYUOmN6-qMy9CnxPur6j
