@@ -4,20 +4,20 @@ pipeline{
         maven "maven"
     }
         stages{
-        stage("build & SonarQube analysis"){
-            steps{
-                withSonarQubeEnv('sonarcube') {
-                    sh 'mvn clean package sonar:sonar'
-                }
-            }
-        }
-        stage("Quality Gate") {
-            steps {
-              timeout(time: 5, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true
-              }
-            }
-        }
+        // stage("build & SonarQube analysis"){
+        //     steps{
+        //         withSonarQubeEnv('sonarcube') {
+        //             sh 'mvn clean package sonar:sonar'
+        //         }
+        //     }
+        // }
+        // stage("Quality Gate") {
+        //     steps {
+        //       timeout(time: 5, unit: 'MINUTES') {
+        //         waitForQualityGate abortPipeline: true
+        //       }
+        //     }
+        // }
 
 
 
