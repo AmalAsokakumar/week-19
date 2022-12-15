@@ -37,12 +37,13 @@ pipeline{
         stage("EC-repository Docker"){
             steps{
                 echo "this is a test stage"
+                echo 'login to ecr'
+                sh'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/z2t0b6v5'
 
-                sh '''
-                 aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/z2t0b6v5
-                 docker tag maven-artifact:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/maven-artifact:$BUILD_NUMBER
-                 docker push public.ecr.aws/z2t0b6v5/maven-artifact:$BUILD_NUMBER
-                '''
+                // sh '''
+                //  docker tag maven-artifact:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/maven-artifact:$BUILD_NUMBER
+                //  docker push public.ecr.aws/z2t0b6v5/maven-artifact:$BUILD_NUMBER
+                // '''
             } 
         }
 
