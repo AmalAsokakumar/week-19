@@ -38,8 +38,6 @@ pipeline{
             steps{
                 echo "this is a test stage"
                 echo 'login to ecr'
-                sh'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/z2t0b6v5'
-
                 // sh '''
                 //  docker tag maven-artifact:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/maven-artifact:$BUILD_NUMBER
                 //  docker push public.ecr.aws/z2t0b6v5/maven-artifact:$BUILD_NUMBER
@@ -48,7 +46,8 @@ pipeline{
         }
 
 
-
+// access key id :  AKIAVAZX5MABKZLVT3UO
+// access key secret : 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
         // stage("EC-repository Docker"){
         //     steps{
         //         withEnv(["AWS_ACCESS_KEY_ID='${env.AWS_ACCESS_KEY_ID}'", "AWS_SECRET_ACCESS_KEY='${env.AWS_SECRET_ACCESS_KEY}'", "AWS_DEFAULT_REGION='${env.AWS_DEFAULT_REGION}'"]){ //authentication the aws
