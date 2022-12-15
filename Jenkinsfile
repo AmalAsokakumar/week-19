@@ -29,7 +29,7 @@ pipeline{
         }
         stage("Build Image") {
             steps{
-                sh 'docker build -t devop-demo-ecr:$BUILD_NUMBER .'
+                sh 'docker build -t maven-artifact:$BUILD_NUMBER .'
             }
         }
 
@@ -37,16 +37,12 @@ pipeline{
         stage("EC-repository Docker"){
             steps{
                 echo "this is a test stage"
-                // withEnv(["AWS_ACCESS_KEY_ID='${env.AWS_ACCESS_KEY_ID}'", "AWS_SECRET_ACCESS_KEY='${env.AWS_SECRET_ACCESS_KEY}'", "AWS_DEFAULT_REGION='${env.AWS_DEFAULT_REGION}'"]){ //authentication the aws
-                //     sh 'docker login -u AWS -p$(aws ecr-public get-login-password --region us-east-1) public.ecr.aws/z2t0b6v5'
-                //     // sh 'docker build -t devop-demo-ecr:$BUILD_NUMBER .'  // need to move it above step 
-                //     sh 'docker tag devop-demo-ecr:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/devop-demo-ecr:$BUILD_NUMBER'
-                //     sh 'docker push public.ecr.aws/z2t0b6v5/devop-demo-ecr:latest'
 
-                // }
-    // sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/z2t0b6v5'
-    // sh 'docker tag devop-demo-ecr:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/devop-demo-ecr:$BUILD_NUMBER'
-    // sh 'docker push public.ecr.aws/z2t0b6v5/devop-demo-ecr:latest'
+                sh '''
+                 aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/z2t0b6v5
+                 docker tag maven-artifact:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/maven-artifact:$BUILD_NUMBER
+                 docker push public.ecr.aws/z2t0b6v5/maven-artifact:$BUILD_NUMBER
+                '''
             } 
         }
 
