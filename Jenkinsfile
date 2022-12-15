@@ -43,9 +43,9 @@ pipeline{
                 //     sh 'docker push public.ecr.aws/z2t0b6v5/devop-demo-ecr:latest'
 
                 // }
-                sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/z2t0b6v5'
-                sh 'docker tag devop-demo-ecr:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/devop-demo-ecr:$BUILD_NUMBER'
-                sh 'docker push public.ecr.aws/z2t0b6v5/devop-demo-ecr:latest'
+    // sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/z2t0b6v5'
+    // sh 'docker tag devop-demo-ecr:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/devop-demo-ecr:$BUILD_NUMBER'
+    // sh 'docker push public.ecr.aws/z2t0b6v5/devop-demo-ecr:latest'
             } 
         }
 
