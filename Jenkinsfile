@@ -18,6 +18,26 @@ pipeline{
               }
             }
         }
+        stage('unit test'){
+            steps{
+                sh 'mvn test'
+            }
+        }
+        stage('integration test'){
+            steps {
+                sh 'mvn verify  -DskipUnitTests'
+            }
+        }
+        stage('code analysis with checkstyle'){
+            steps{
+                sh 'mvn checkstyle:checkstyle'
+            }
+            post {
+                success{
+                    echo "Generated Analysis Result"
+                }
+            }
+        }
         stage("Maven Packaging"){
           steps{
            sh 'mvn package'
@@ -28,38 +48,7 @@ pipeline{
                 sh 'docker build -t maven-artifact:$BUILD_NUMBER .'
             }
         }
-
-
-        stage("EC-repository Docker"){
-            steps{
-                echo "this is a test stage"
-                echo 'login to ecr'
-                sh 'aws ecr-public login --region us-east-1 '
-                echo 'logged in to the ecr '
-        //         // withEnv(["AWS_ACCESS_KEY_ID='${env.AWS_ACCESS_KEY_ID}'", "AWS_SECRET_ACCESS_KEY='${env.AWS_SECRET_ACCESS_KEY}'", "AWS_DEFAULT_REGION='${env.AWS_DEFAULT_REGION}'"]){ //authentication the aws
-                    // sh 'docker login -u AWS -p$(aws ecr-public get-login-password --region us-east-2) public.ecr.aws/z2t0b6v5'
-                    // sh 'docker build -t devop-demo-ecr:$BUILD_NUMBER .'  // need to move it above step 
-                    sh 'docker tag devop-demo-ecr:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/devop-demo-ecr:$BUILD_NUMBER'
-                    sh 'docker push public.ecr.aws/z2t0b6v5/devop-demo-ecr:latest'
-
-                } 
-            }
-
-// access key id :  AKIAVAZX5MABKZLVT3UO
-// access key secret : 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
-        // stage("EC-repository Docker"){
-        //     steps{
-        //         withEnv(["AWS_ACCESS_KEY_ID='${env.AWS_ACCESS_KEY_ID}'", "AWS_SECRET_ACCESS_KEY='${env.AWS_SECRET_ACCESS_KEY}'", "AWS_DEFAULT_REGION='${env.AWS_DEFAULT_REGION}'"]){ //authentication the aws
-        //             sh 'docker login -u AWS -p$(aws ecr-public get-login-password --region us-east-1) public.ecr.aws/z2t0b6v5'
-        //             // sh 'docker build -t devop-demo-ecr:$BUILD_NUMBER .'  // need to move it above step 
-        //             sh 'docker tag devop-demo-ecr:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/devop-demo-ecr:$BUILD_NUMBER'
-        //             sh 'docker push public.ecr.aws/z2t0b6v5/devop-demo-ecr:latest'
-
-        //         }
-        //         // sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/z2t0b6v5'
-        //         // sh 'docker tag devop-demo-ecr:$BUILD_NUMBER public.ecr.aws/z2t0b6v5/devop-demo-ecr:$BUILD_NUMBER'
-        //         // sh 'docker push public.ecr.aws/z2t0b6v5/devop-demo-ecr:latest'
-        //     } 
+ 
         // }
         // stage("EC-repository Helm"){
         //     steps{
