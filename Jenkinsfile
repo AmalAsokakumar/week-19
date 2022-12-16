@@ -62,7 +62,7 @@ pipeline{
             }
         }
         stage('identifing misconfiguration using datree in helm charts'){
-            step{
+            steps{
                 dir('HELM-CHART') {
                     sh 'helm datree test .'
                 }  
