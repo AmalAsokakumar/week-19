@@ -48,19 +48,26 @@ pipeline{
                 echo 'building docker image '
                 sh 'docker build -t 18.188.220.54:8083/maven-app:$BUILD_NUMBER .'
                 echo 'doker login '
-                    withCredentials([string(credentialsId: 'nexus-password', variable: 'password')]) {
-                        sh '''
-                            docker login -u admin -p $password 18.188.220.54:8083
-                            docker push 18.188.220.54:8083/maven-app:$BUILD_NUMBER
-                            docker rmi 18.188.220.54:8083/maven-app:$BUILD_NUMBER
-                        '''
-                    }
-                
-
             }
         }
-
- 
+        stage('Pushing the image to Nexus'){
+            steps{
+                withCredentials([string(credentialsId: 'nexus-password', variable: 'password')]) {
+                    sh '''
+                        docker login -u admin -p $password 18.188.220.54:8083
+                        docker push 18.188.220.54:8083/maven-app:$BUILD_NUMBER
+                        docker rmi 18.188.220.54:8083/maven-app:$BUILD_NUMBER
+                    '''
+                }
+            }
+        }
+        stage('identifing misconfiguration using datree in helm charts'){
+            step{
+                dir('HELM-CHART') {
+                    sh 'helm datree test .'
+                }  
+            }
+        }
         // }
         // stage("EC-repository Helm"){
         //     steps{
@@ -81,3 +88,5 @@ pipeline{
         
     }
 }
+
+// sqp_9e212df7e9b2f0b3fa54b77e7be7f7b2cbd0b0f3 sonarscanner java-script 
