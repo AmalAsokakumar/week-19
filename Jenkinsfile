@@ -45,9 +45,21 @@ pipeline{
         }
         stage("Build Image") {
             steps{
-                sh 'docker build -t maven-artifact:$BUILD_NUMBER .'
+                echo 'building docker image '
+                sh 'docker build -t 18.188.220.54:8083/maven-app:$BUILD_NUMBER .'
+                echo 'doker login '
+                    withCredentials([string(credentialsId: 'nexus-password', variable: 'password')]) {
+                        sh '''
+                            docker login -u admin -p $password 18.188.220.54:8083
+                            docker push 18.188.220.54:8083/maven-app:$BUILD_NUMBER
+                            docker rmi 18.188.220.54:8083/maven-app:$BUILD_NUMBER
+                        '''
+                    }
+                
+
             }
         }
+
  
         // }
         // stage("EC-repository Helm"){
