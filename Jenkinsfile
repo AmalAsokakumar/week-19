@@ -61,13 +61,13 @@ pipeline{
                 }
             }
         }
-        stage('identifing misconfiguration using datree in helm charts'){
-            steps{
-                dir('HELM-CHART') {
-                    sh 'helm datree test .'
-                }  
-            }
-        }
+        // stage('identifing misconfiguration using datree in helm charts'){
+        //     steps{
+        //         dir('HELM-CHART') {
+        //             sh 'helm datree test .'
+        //         }  
+        //     }
+        // }
         // }
         // stage("EC-repository Helm"){
         //     steps{
